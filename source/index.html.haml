@@ -14,23 +14,19 @@
             %span.icon-bar
             %span.icon-bar
             %span.icon-bar
-          %a.brand{:href => "#"} Intalio|HR
+          %a.brand Intalio|HR
           .nav-collapse.collapse
             %ul.nav
               %li.active
-                %a{:href => "#"} Jobs
+                %a#job_link Jobs
               %li
-                %a{:href => "#about"} Your resume
-            %form.navbar-form.pull-right
-              %input.span2{:placeholder => "Email", :type => "text"}/
-              %input.span2{:placeholder => "Password", :type => "password"}/
-              %button.btn{:type => "submit"} Sign in
+                %a#resume_link Your resume
     .container
       .hero-unit
         %h1 Awesome jobs!
         %p Job are ficticious but Intalio|Create is not. Surrender yourself for the 10x productivity increase that Intalio|Create will give you
-    #container.container
-    #myModal.modal.hide.fade{"aria-hidden" => "true", "aria-labelledby" => "myModalLabel", :role => "dialog", :tabindex => "-1"}
+    #index_container.container
+    #resume_container.container
     .container
       %hr/
       %footer
