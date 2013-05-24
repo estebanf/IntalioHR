@@ -1,4 +1,5 @@
-%html
+!!!
+%html{:lang => "en"}
   %head
     %meta{:charset => "utf-8"}
     %meta{:content => "IE=edge,chrome=1", "http-equiv" => "X-UA-Compatible"}
@@ -45,3 +46,45 @@
       .modal-footer
         %button.btn{"aria-hidden" => "true", "data-dismiss" => "modal"} Close
         %button.btn.btn-primary Save changes
+    %script#AuthForm{:type => "text/intalio"}
+      .span6
+        %form
+          %fieldset
+            %legend
+              %h3
+                Sign up
+            #errorRegister.alert.alert-error
+              %button.close{:type => :button,"data-dismiss" => "alert"}
+                &times;
+              An error ocurred
+            %label
+              Name
+            %input#registerName{:type => :text,:placeholder => "Name"}
+            %label
+              Email
+            %input#registerEmail{:type => :text,:placeholder => "Email"}
+            %label
+              Password
+            %input#registerPassword{:type => :password,:placeholder => "Password"}
+            %p
+            %button#btnRegister.btn-primary.btn-large{:type => :button}
+              Register
+      .span6
+        %form
+          %fieldset
+            %legend
+              %h3
+                Sign in
+            #errorLogin.alert.alert-error
+              %button.close{:type => :button,"data-dismiss" => "alert"}
+                &times;
+              An error ocurred
+            %label
+              Email
+            %input#loginEmail{:type => :text,:placeholder => "Email"}
+            %label
+              Password
+            %input#loginPassword{:type => :password,:placeholder => "Password"}
+            %p
+            %button#btnLogin.btn-primary.btn-large{:type => :button}
+              Login

@@ -1,6 +1,53 @@
 _.templateSettings = {
   interpolate : /\{\{(.+?)\}\}/g
 };
+var AuthFormView = Backbone.View.extend({
+	initialize: function(container,register,login,app){
+		this.$el = container;
+		this.register_cb = register;
+		this.login_cb = login;
+		this.container= $("<div />").addClass("row").attr("id","AuthFormView");
+		this.content = $("#AuthForm").html();
+		this.app = app;
+		this.app.on("login",this.close,this);
+	},
+	events:{
+		"click #btnRegister":"register",
+		"click #btnLogin":"login"	
+	},
+	close:function(){
+		this.container.remove();
+	},
+	render: function(){
+		this.container.html(this.content);
+		($("AuthFormView").length == 0) && this.$el.append(this.container);
+		this.error_register = $("#errorRegister");
+		this.error_login = $("#errorLogin");
+		this.error_register.hide();
+		this.error_login.hide();
+
+		return this;
+	},
+	register: function(){
+		name = $("#registerName").val();
+		email = $("#registerEmail").val();
+		password = $("#registerPassword").val();
+		if(name && email && password && name != "" && email != "" && password != ""){
+			this.register_cb({name:name,email:email,password:password},_.bind(function(){
+				this.error_register.show();
+			},this));
+		}
+	},
+	login: function(){
+		email = $("#loginEmail").val();
+		password = $("#loginPassword").val();
+		if(email && password && email != "" && password != ""){
+			this.login_cb({email:email,password:password},_.bind(function(){
+				this.error_login.show();
+			},this));
+		}
+	}
+});
 
 var JobPositionDetailModalView = Backbone.View.extend({
 	initialize:function(model,container){

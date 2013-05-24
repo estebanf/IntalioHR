@@ -1,4 +1,29 @@
 // Models
+var Experience = Backbone.Model.extend({});
+var Education = Backbone.Model.extend({});
+var ResumeSkill = Backbone.Model.extend({
+
+});
+var Experiences = Backbone.Collection.extend({
+	model:Experience
+});
+var Educations = Backbone.Collection.extend({
+	model:Education
+});
+var ResumeSkills = Backbone.Collection.extend({
+	model:ResumeSkill
+});
+
+var Resume = Backbone.Model.extend({
+	parse:function(data){
+		this.set({id:data.id});
+		this.set({name:data.name})
+		this.set({email:data.email});
+		this.set({educations:new Educations(data.educations)});
+		this.set({experiences:new Experiences(data.experiences)});
+		this.set({skills:new ResumeSkills(data.skills)});
+	}
+})
 var JobPosition = Backbone.Model.extend({
 	initialize:function(){
 		this.bind("add",this.check_description,this);
