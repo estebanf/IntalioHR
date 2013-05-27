@@ -41,7 +41,9 @@ var EducationItemVIew = Backbone.View.extend({
 	}
 });
 var ResumeFormView = Backbone.View.extend({
-	initialize: function(container,resume,app){
+	initialize: function(container,resume,skills,proficiencies,app){
+		this.skills = skills;
+		this.proficiencies = proficiencies;
 		this.app = app;
 		this.$el = container;
 		this.container= $("<div />").addClass("row").attr("id","ResumeFormView");
@@ -51,21 +53,98 @@ var ResumeFormView = Backbone.View.extend({
 		this.educationItems = [];
 		this.experienceItems = [];
 		this.skillItems = [];
+		this.createEducation = _.bind(_.partial(this.createItem,EducationItemVIew,"#educationContainer",'educationItems'),this);
+		this.createExperience = _.bind(_.partial(this.createItem,ExperienceItemVIew,"#experienceContainer",'experienceItems'),this);
+		this.createSkill = _.bind(_.partial(this.createItem,SkillItemVIew,"#skillContainer",'skillItems'),this);
+		this.resume.get("educations").on("add",this.createEducation,this)
+		this.resume.get("experiences").on("add",this.createExperience,this)
+		this.resume.get("skills").on("add",this.createSkill,this)
+
+	},
+	events: {
+		"click #btnAddEducation":"add_education",
+		"click #btnAddResumeSkill":"add_skill",
+		"click #btnAddExperience":"add_experience",
+
+	},
+	add_education:function(){
+		ctrlInstitute = $("#txtInstitute");
+		ctrlDegree = $("#txtDegree");
+		ctrlStart_date = $("#txtEducationStartDate");
+		ctrlEnd_date = $("#txtEducationEndDate");
+		if(ctrlInstitute.val() != '' &&
+			ctrlDegree.val() != '' &&
+			ctrlStart_date.val() != '' &&
+			ctrlEnd_date.val() != ''){
+
+			this.resume.get("educations").create({
+				institute:ctrlInstitute.val(),
+				degree:ctrlDegree.val(),
+				start_date:ctrlStart_date.val(),
+				end_date:ctrlEnd_date.val()
+			})
+			ctrlInstitute.val('');
+			ctrlDegree.val('');
+			ctrlStart_date.val('');
+			ctrlEnd_date.val('');
+		}
+	},
+	add_skill:function(){
+		console.log("skill")
+	},
+	add_experience:function(){
+		ctrlCompany = $("#txtCompany");
+		ctrlPosition = $("#txtPosition");
+		ctrlStart_date = $("#txtExperienceStartDate");
+		ctrlEnd_date = $("#txtExperienceEndDate");
+		if(ctrlCompany.val() != '' &&
+			ctrlPosition.val() != '' &&
+			ctrlStart_date.val() != '' &&
+			ctrlEnd_date.val() != ''){
+
+			this.resume.get("experiences").create({
+				company:ctrlCompany.val(),
+				position:ctrlPosition.val(),
+				start_date:ctrlStart_date.val(),
+				end_date:ctrlEnd_date.val()
+			})
+			ctrlCompany.val('');
+			ctrlPosition.val('');
+			ctrlStart_date.val('');
+			ctrlEnd_date.val('');
+		}	
+	},
+	createItem:function(viewClass,container,holder_array,model){
+		itemView = new viewClass(model);
+		$(container).children(".info").before(itemView.render().$el);
+		this[holder_array].push(itemView);
 	},
 	render:function(){
-		createItem = _.bind(function(collection_key,viewClass,container,holder_array){
-			_.each(this.resume.get(collection_key).models,_.bind(function(model){
-				itemView = new viewClass(model);
-				$(container).children(".info").before(itemView.render().$el);
-				this[holder_array].push(itemView);
-			},this));
+		item_create = _.bind(function(collection_key,fn){
+			_.each(this.resume.get(collection_key).models,function(model){
+				fn(model);
+			});
 		},this);
 		content = this.template(this.resume.toJSON());
 		this.container.html(content);
 		($("#ResumeFormView").length == 0) && this.$el.append(this.container);
-		createItem("educations",EducationItemVIew,"#educationContainer",'educationItems');
-		createItem("experiences",ExperienceItemVIew,"#experienceContainer",'experienceItems');
-		createItem("skills",SkillItemVIew,"#skillContainer",'skillItems');
+
+		item_create("educations",this.createEducation);
+		item_create("experiences",this.createExperience);
+		item_create("skills",this.createSkill);
+
+		_.each(this.skills.models,function(skill){
+			$("#dropSkills")
+				.append($("<option></option>")
+					.attr("value",skill.get("id"))
+					.text(skill.get("name")))
+		})
+		_.each(this.proficiencies.models,function(proficiency){
+			$("#dropProficiency")
+				.append($("<option></option>")
+					.attr("value",proficiency.get("id"))
+					.text(proficiency.get("name")))
+		})
 		return this;
 	}
 });

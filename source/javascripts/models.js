@@ -60,7 +60,7 @@ var Skills = Backbone.Collection.extend({
 	url:'/hr/skills',
 	model: Skill
 })
-var Proficiencies = Backbone.Model.extend({
+var Proficiencies = Backbone.Collection.extend({
 	url: '/hr/proficiencies',
 	model:Proficiency
 });

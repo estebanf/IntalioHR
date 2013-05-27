@@ -157,15 +157,15 @@
           %tbody#educationContainer
             %tr.info
               %td
-                %input{:type => :text}
+                %input#txtInstitute{:type => :text, :placeholder => "Institute"}
               %td
-                %input{:type => :text}
+                %input#txtDegree{:type => :text,:placeholder => "Degree"}
               %td
-                %input{:type => :text}
+                %input#txtEducationStartDate{:type => :date}
               %td
-                %input{:type => :text}
+                %input#txtEducationEndDate{:type => :date}
               %td
-                %button.btn.btn-primary
+                %button#btnAddEducation.btn.btn-primary
                   Add
         %legend
           %h1
@@ -189,15 +189,15 @@
           %tbody#experienceContainer
             %tr.info
               %td
-                %input{:type => :text}
+                %input#txtCompany{:type => :text, :placeholder => "Company"}
               %td
-                %input{:type => :text}
+                %input#txtPosition{:type => :text,:placeholder => "Position"}
               %td
-                %input{:type => :text}
+                %input#txtExperienceStartDate{:type => :date}
               %td
-                %input{:type => :text}
+                %input#txtExperienceEndDate{:type => :date}
               %td
-                %button.btn.btn-primary
+                %button#btnAddExperience.btn.btn-primary
                   Add
         %legend
           %h1
@@ -215,9 +215,9 @@
           %tbody#skillContainer
             %tr.info
               %td
-                %input{:type => :text}
+                %select#dropSkills
               %td
-                %input{:type => :text}
+                %select#dropProficiency
               %td
-                %button.btn.btn-primary
+                %button#btnAddResumeSkill.btn.btn-primary
                   Add

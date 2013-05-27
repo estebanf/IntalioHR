@@ -23,7 +23,7 @@ var App = function(index_container,resume_container){
 }
 App.prototype.setResume = function(data) {
 	this.resume = new Resume(data,{parse:true});
-	this.resume_form_view = new ResumeFormView(this.resume_container,this.resume,this);
+	this.resume_form_view = new ResumeFormView(this.resume_container,this.resume,this.skills,this.proficiencies,this);
 	this.trigger("login");
 };
 App.prototype.login_register = function(url,data,fail_callback) {
