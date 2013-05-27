@@ -19,9 +19,15 @@ var Resume = Backbone.Model.extend({
 		this.set({id:data.id});
 		this.set({name:data.name})
 		this.set({email:data.email});
-		this.set({educations:new Educations(data.educations)});
-		this.set({experiences:new Experiences(data.experiences)});
-		this.set({skills:new ResumeSkills(data.skills)});
+		educations = new Educations(data.educations);
+		educations.url = "/hr/resume/" + data.id + "/education"
+		this.set({educations: educations});
+		experiences = new Experiences(data.experiences)
+		experiences.url = "/hr/resume/" + data.id + "/experience"
+		this.set({experiences:experiences});
+		skills = new ResumeSkills(data.skills);
+		skills.url = "/hr/resume/" + data.id + "/skill"
+		this.set({skills:skills});
 	}
 })
 var JobPosition = Backbone.Model.extend({

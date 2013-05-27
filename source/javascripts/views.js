@@ -1,6 +1,74 @@
 _.templateSettings = {
   interpolate : /\{\{(.+?)\}\}/g
 };
+var SkillItemVIew = Backbone.View.extend({
+	initialize:function(model){
+		this.$el = $("<tr>");
+		this.model = model;
+		this.template = _.template($("#SkillItem").html());
+	},
+	render:function(){
+		content = this.template(this.model.toJSON());
+		this.$el.attr("id",this.model.get("id"));
+		this.$el.html(content);
+		return this;
+	}
+});
+var ExperienceItemVIew = Backbone.View.extend({
+	initialize:function(model){
+		this.$el = $("<tr>");
+		this.model = model;
+		this.template = _.template($("#ExperienceItem").html());
+	},
+	render:function(){
+		content = this.template(this.model.toJSON());
+		this.$el.attr("id",this.model.get("id"));
+		this.$el.html(content);
+		return this;
+	}
+});
+var EducationItemVIew = Backbone.View.extend({
+	initialize:function(model){
+		this.$el = $("<tr>");
+		this.model = model;
+		this.template = _.template($("#EducationItem").html());
+	},
+	render:function(){
+		content = this.template(this.model.toJSON());
+		this.$el.attr("id",this.model.get("id"));
+		this.$el.html(content);
+		return this;
+	}
+});
+var ResumeFormView = Backbone.View.extend({
+	initialize: function(container,resume,app){
+		this.app = app;
+		this.$el = container;
+		this.container= $("<div />").addClass("row").attr("id","ResumeFormView");
+		this.template = _.template($("#ResumeForm").html());
+		this.resume = resume;
+		this.app.on("login",this.render,this);
+		this.educationItems = [];
+		this.experienceItems = [];
+		this.skillItems = [];
+	},
+	render:function(){
+		createItem = _.bind(function(collection_key,viewClass,container,holder_array){
+			_.each(this.resume.get(collection_key).models,_.bind(function(model){
+				itemView = new viewClass(model);
+				$(container).children(".info").before(itemView.render().$el);
+				this[holder_array].push(itemView);
+			},this));
+		},this);
+		content = this.template(this.resume.toJSON());
+		this.container.html(content);
+		($("#ResumeFormView").length == 0) && this.$el.append(this.container);
+		createItem("educations",EducationItemVIew,"#educationContainer",'educationItems');
+		createItem("experiences",ExperienceItemVIew,"#experienceContainer",'experienceItems');
+		createItem("skills",SkillItemVIew,"#skillContainer",'skillItems');
+		return this;
+	}
+});
 var AuthFormView = Backbone.View.extend({
 	initialize: function(container,register,login,app){
 		this.$el = container;
@@ -20,7 +88,7 @@ var AuthFormView = Backbone.View.extend({
 	},
 	render: function(){
 		this.container.html(this.content);
-		($("AuthFormView").length == 0) && this.$el.append(this.container);
+		($("#AuthFormView").length == 0) && this.$el.append(this.container);
 		this.error_register = $("#errorRegister");
 		this.error_login = $("#errorLogin");
 		this.error_register.hide();

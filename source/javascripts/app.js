@@ -1,5 +1,6 @@
 var App = function(index_container,resume_container){
 	_.extend(this,Backbone.Events);
+	this.resume_container = resume_container;
 	this.job_positions = new JobPositions();
 	this.skills = new Skills();
 	this.proficiencies = new Proficiencies();
@@ -22,6 +23,7 @@ var App = function(index_container,resume_container){
 }
 App.prototype.setResume = function(data) {
 	this.resume = new Resume(data,{parse:true});
+	this.resume_form_view = new ResumeFormView(this.resume_container,this.resume,this);
 	this.trigger("login");
 };
 App.prototype.login_register = function(url,data,fail_callback) {
