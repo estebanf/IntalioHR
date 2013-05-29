@@ -79,7 +79,7 @@ App.prototype.init = function() {
 			self.skills.fetch({
 				success:function(){
 					Backbone.history.start({pushState: false});
-					self.go_resume();
+					self.go_index();
 				}
 			})
 		}
