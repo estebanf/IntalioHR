@@ -35,17 +35,21 @@
     %script#JobPositionItemTemplate{:type => "text/intalio"}
       %h2 {{name}}
       %p {{description_parsed}}
+      #alert_done.alert.alert-info
+        You had already applied for this job
       %p
         %a.btn View details
     %script#JobPositionDetailModal{:type => "text/intalio"}
       .modal-header
-        %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", :type => "button"} ×
         %h3#myModalLabel {{name}}
       .modal-body
         %p {{description}}
       .modal-footer
-        %button.btn{"aria-hidden" => "true", "data-dismiss" => "modal"} Close
-        %button.btn.btn-primary Save changes
+        %button#btnClose.btn Close
+        %button#btnApply.btn.btn-primary Save changes
+        #apply_alert.alert.alert-success
+          Thanks for applying! &nbsp;&nbsp;&nbsp;&nbsp;
+          %button#btnFinish.btn Finish
     %script#AuthForm{:type => "text/intalio"}
       .span6
         %form

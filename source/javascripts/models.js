@@ -1,9 +1,9 @@
 // Models
-var Experience = Backbone.Model.extend({
+var ResultData = {
 	parse:function(data){
 		source = data
 		if(data.result){
-			source = data.experience
+			source = data[this.data_key]
 		}
 		obj = {}
 		for(name in source){
@@ -11,33 +11,23 @@ var Experience = Backbone.Model.extend({
 		}
 		this.set(obj);
 	}
-});
-var Education = Backbone.Model.extend({
-	parse:function(data){
-		source = data
-		if(data.result){
-			source = data.education
-		}
-		obj = {}
-		for(name in source){
-			obj[name] = source[name]
-		}
-		this.set(obj);
-	}	
-});
-var ResumeSkill = Backbone.Model.extend({
-	parse:function(data){
-		source = data
-		if(data.result){
-			source = data.resume_skill
-		}
-		obj = {}
-		for(name in source){
-			obj[name] = source[name]
-		}
-		this.set(obj);
-	}	
-});
+}
+var Experience = _.extend(Backbone.Model.extend({
+	initialize: function(){
+		this.data_key = "experience"
+	}
+}),ResultData);
+
+var Education = _.extend(Backbone.Model.extend({
+	initialize:function(){
+		this.data_key = "education";
+	}
+}),ResultData);
+var ResumeSkill = _.extend(Backbone.Model.extend({
+	initialize:function(){
+		this.data_key = "resume_skill"
+	}
+}),ResultData);
 var Experiences = Backbone.Collection.extend({
 	model:Experience
 });
@@ -47,6 +37,8 @@ var Educations = Backbone.Collection.extend({
 var ResumeSkills = Backbone.Collection.extend({
 	model:ResumeSkill
 });
+var JobApplication = Backbone.Model.extend({});
+var JobApplications = Backbone.Collection.extend({});
 
 var Resume = Backbone.Model.extend({
 	parse:function(data){
@@ -62,6 +54,8 @@ var Resume = Backbone.Model.extend({
 		skills = new ResumeSkills(data.skills);
 		skills.url = "/hr/resume/" + data.id + "/skill"
 		this.set({skills:skills});
+		job_applications = new JobPositions(data.job_applications);
+		this.set({job_applications:job_applications})
 	}
 })
 var JobPosition = Backbone.Model.extend({

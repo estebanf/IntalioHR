@@ -68,7 +68,9 @@ App.prototype.go_resume = function() {
   	$("#resume_link").parent().addClass("active");
   	$("#job_link").parent().removeClass("active");
 	this.router.navigate("resume",{trigger:true});
-	this.auth_form_view.render();
+	if(!this.resume){
+		this.auth_form_view.render();
+	}
 };
 App.prototype.init = function() {
 	var self = this;

@@ -212,15 +212,53 @@ var JobPositionDetailModalView = Backbone.View.extend({
 		this.$el = container;
 		this.template = _.template($("#JobPositionDetailModal").html());
 	},
+	events:{
+		"click #btnApply":"apply",
+		"click #btnClose":"close",
+		"click #btnFinish":"close"
+	},
+	close:function(){
+		this.trigger("close");
+	},
+	apply:function(){
+		if(!window.app.resume){
+			this.trigger("close");
+			window.app.go_resume();
+		}
+		else{
+			url = "/hr/job_application/" + this.model.get("id") + "/" + window.app.resume.get("id")
+			$.ajax({
+				type:"POST",
+				url: url,
+				success:_.bind(function(data,status){
+					if(data.result == true){
+						console.log(data);
+						$("#btnApply").hide();
+						$("#btnClose").hide();
+						$("#apply_alert").show();
+						this.model.trigger("applied");
+					}
+				},this),
+				dataType:"json"
+			})
+		}
+	},
 	render:function(){
 		content = this.template(this.model.toJSON());
 		this.$el.html(content);
+		if(!window.app.resume){
+			$("#btnApply").text("Login to apply");
+		}else{
+			$("#btnApply").text("Apply");
+		}
+		$("#apply_alert").hide();
 		return this;
 	}
 })
 var JobPositionItemView = Backbone.View.extend({
 	initialize:function(item,parent_element,containers){
 		this.model = item;
+		this.model.on("applied",this.applied,this);
 		this.containers = containers;
 		this.$el = this.containers.item("JobPositionItem-" + this.model.get("id"));
 		parent_element.append(this.$el);
@@ -233,9 +271,34 @@ var JobPositionItemView = Backbone.View.extend({
 	open_modal:function(){
 		this.trigger("detail_clicked",this.model);
 	},
+	applied:function(){
+		this.alert.show();
+		this.button.hide();
+	},
 	render:function(){
 		content = this.template(this.model.toJSON());
 		this.$el.html(content);
+		this.alert = this.$el.children(".alert-info").first();
+		this.button = $("#JobPositionItem-" + this.model.get("id") + " .btn").first();
+		if(window.app.resume){
+			model_id = this.model.get("id")
+			match = _.find(window.app.resume.get("job_applications").models,function(application){
+				return application.get("job_position_id") == model_id;
+			});
+			if(match){
+				this.alert.show();
+				this.button.hide();
+			}
+			else{
+				this.alert.hide();
+				this.button.show();
+			}
+		}
+		else{
+			this.alert.hide();
+			this.button.show();
+
+		}
 		return this;
 	}
 });
@@ -296,10 +359,17 @@ var JobPositionsView = Backbone.View.extend({
 		if(!this.modal_view){
 			this.containers.view.append(this.containers.modal);
 			this.modal_view = new JobPositionDetailModalView(model,this.containers.modal);
+			this.modal_view.on("close",this.close_modal,this);
 		}
 		else{
 			this.modal_view.model = model;
 		}
 		this.modal_view.render().$el.modal('show');
+	},
+	close_modal:function(){
+		this.modal_view.$el.modal('hide');
+		this.containers.modal.remove();
+		this.modal_view = null;
 	}
+
 })
