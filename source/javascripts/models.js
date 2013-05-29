@@ -1,8 +1,42 @@
 // Models
-var Experience = Backbone.Model.extend({});
-var Education = Backbone.Model.extend({});
+var Experience = Backbone.Model.extend({
+	parse:function(data){
+		source = data
+		if(data.result){
+			source = data.experience
+		}
+		obj = {}
+		for(name in source){
+			obj[name] = source[name]
+		}
+		this.set(obj);
+	}
+});
+var Education = Backbone.Model.extend({
+	parse:function(data){
+		source = data
+		if(data.result){
+			source = data.education
+		}
+		obj = {}
+		for(name in source){
+			obj[name] = source[name]
+		}
+		this.set(obj);
+	}	
+});
 var ResumeSkill = Backbone.Model.extend({
-
+	parse:function(data){
+		source = data
+		if(data.result){
+			source = data.resume_skill
+		}
+		obj = {}
+		for(name in source){
+			obj[name] = source[name]
+		}
+		this.set(obj);
+	}	
 });
 var Experiences = Backbone.Collection.extend({
 	model:Experience

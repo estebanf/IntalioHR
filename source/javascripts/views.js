@@ -7,6 +7,13 @@ var SkillItemVIew = Backbone.View.extend({
 		this.model = model;
 		this.template = _.template($("#SkillItem").html());
 	},
+	events:{
+		"click .btn-danger":"remove"
+	},
+	remove: function(){
+		this.model.destroy();
+		this.$el.remove();
+	},
 	render:function(){
 		content = this.template(this.model.toJSON());
 		this.$el.attr("id",this.model.get("id"));
@@ -50,12 +57,9 @@ var ResumeFormView = Backbone.View.extend({
 		this.template = _.template($("#ResumeForm").html());
 		this.resume = resume;
 		this.app.on("login",this.render,this);
-		this.educationItems = [];
-		this.experienceItems = [];
-		this.skillItems = [];
-		this.createEducation = _.bind(_.partial(this.createItem,EducationItemVIew,"#educationContainer",'educationItems'),this);
-		this.createExperience = _.bind(_.partial(this.createItem,ExperienceItemVIew,"#experienceContainer",'experienceItems'),this);
-		this.createSkill = _.bind(_.partial(this.createItem,SkillItemVIew,"#skillContainer",'skillItems'),this);
+		this.createEducation = _.partial(this.createItem,EducationItemVIew,"#educationContainer");
+		this.createExperience = _.partial(this.createItem,ExperienceItemVIew,"#experienceContainer");
+		this.createSkill = _.partial(this.createItem,SkillItemVIew,"#skillContainer");
 		this.resume.get("educations").on("add",this.createEducation,this)
 		this.resume.get("experiences").on("add",this.createExperience,this)
 		this.resume.get("skills").on("add",this.createSkill,this)
@@ -90,7 +94,14 @@ var ResumeFormView = Backbone.View.extend({
 		}
 	},
 	add_skill:function(){
-		console.log("skill")
+		ctrlSkills = $("#dropSkills");
+		ctrlProficiency = $("#dropProficiency");
+		skill_id = ctrlSkills.val();
+		skill_name = ctrlSkills.children("option:selected").text();
+		proficiency_id = ctrlProficiency.val();
+		proficiency_name = ctrlProficiency.children("option:selected").text();
+
+		this.resume.get("skills").create({proficiency_id:proficiency_id,proficiency_name:proficiency_name,skill_id:skill_id,skill_name:skill_name});
 	},
 	add_experience:function(){
 		ctrlCompany = $("#txtCompany");
@@ -114,10 +125,9 @@ var ResumeFormView = Backbone.View.extend({
 			ctrlEnd_date.val('');
 		}	
 	},
-	createItem:function(viewClass,container,holder_array,model){
+	createItem:function(viewClass,container,model){
 		itemView = new viewClass(model);
 		$(container).children(".info").before(itemView.render().$el);
-		this[holder_array].push(itemView);
 	},
 	render:function(){
 		item_create = _.bind(function(collection_key,fn){
